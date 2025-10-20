@@ -1,8 +1,14 @@
 import os
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtGui import QPixmap
 
-from PyQt5 import QtWidgets, uic
+
+from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtCore import QTimer, QUrl
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtWidgets import QVBoxLayout, QLabel
+
 from track_manager import TrackManager
 from playlist_manager import PlaylistManager
 from background_manager import BackgroundManager
@@ -12,6 +18,9 @@ class MusicPlayerWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi("resourses/MusicPlayerWindow.ui", self)
+        self.setWindowTitle("Music Player")
+        self.setWindowIcon(QIcon("resourses/Images/Icons/Music-Player-Icon2.jpeg"))
+
 
         self.player = QMediaPlayer()
         self.timer = QTimer()
@@ -30,9 +39,16 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.backgroundFrame.lower()  # Push behind all other widgets
 
         self.tracks = [
-            "resourses/Music/track1.mp3",
-            "resourses/Music/track2.mp3",
-            "resourses/Music/track3.mp3"
+            os.path.join("resourses/Music", f)
+            for f in os.listdir("resourses/Music")
+            if f.lower().endswith(".mp3")
+
+        ]
+
+        self.covers = [
+            os.path.join("resourses/Images/Covers", f)
+            for f in os.listdir("resourses/Images/Covers")
+            if f.lower().endswith(".jpg") or f.lower().endswith(".png") or f.lower().endswith(".jpeg") or f.lower().endswith(".webp")
         ]
         self.track_manager.set_tracks(self.tracks)
         self.load_track(0)
@@ -43,17 +59,26 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.prevButton.clicked.connect(self.skip_previous)
         self.progressBar.sliderMoved.connect(self.seek_position)
 
+
+        self.nextButton.setIcon(QIcon("resourses/Images/Icons/next_button_icon.png"))
+        self.nextButton.setIconSize(QSize(40, 40))
+        self.nextButton.setText("")
+
+        self.prevButton.setIcon(QIcon("resourses/Images/Icons/back_button_icon.png"))
+        self.prevButton.setIconSize(QSize(40, 40))
+        self.prevButton.setText("")
+
         self.timeStart.setText("0:00")
         self.timeEnd.setText("0:00")
-        self.pauseButton.setText("⏸")
+        self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
+        self.pauseButton.setIconSize(QSize(40, 40))
+        self.pauseButton.setText("")
         self.setObjectName("musicPlayerWindow")
 
     def resizeEvent(self, event):
         self.backgroundFrame.setGeometry(0, 0, self.width(), self.height())
         super().resizeEvent(event)
 
-    from PyQt5 import QtGui
-    import os
     def load_track(self, index):
         if 0 <= index < len(self.tracks):
             track_path = self.tracks[index]
@@ -64,7 +89,7 @@ class MusicPlayerWindow(QtWidgets.QWidget):
             url = QUrl.fromLocalFile(os.path.abspath(track_path))
             self.player.setMedia(QMediaContent(url))
             self.player.play()
-            self.pauseButton.setText("⏸")
+            self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
             self.timer.start()
 
             # 🏷️ Update song title
@@ -73,21 +98,24 @@ class MusicPlayerWindow(QtWidgets.QWidget):
             # 🌄 Update background
             self.background_manager.apply_background(self, index)
 
-            # 🖼️ Load album cover into QLabel named 'albumCover'
-            cover_path = f"resources/Images/Covers/{track_name}.jpeg"
-            if os.path.exists(cover_path):
-                pixmap = QtGui.QPixmap(cover_path)
-                self.albumCover.setPixmap(pixmap)
+            if index >= len(self.covers):
+                pixmap = QPixmap("resourses/Images/Covers/ztrack.png")
             else:
-                self.albumCover.clear()
+                pixmap = QPixmap(self.covers[index])
+
+
+            pixmap = pixmap.scaled(self.albumCover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.imageLabel = QLabel(self)
+            self.imageLabel.setPixmap(pixmap)
+            self.imageLabel.setGeometry(100, 50, 200, 200)
 
     def toggle_pause(self):
         if self.player.state() == QMediaPlayer.PlayingState:
             self.player.pause()
-            self.pauseButton.setText("▶")
+            self.pauseButton.setIcon(QIcon("resourses/Images/Icons/play_button_icon.png"))
         else:
             self.player.play()
-            self.pauseButton.setText("⏸")
+            self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
 
     def skip_next(self):
         index = self.track_manager.next_track()
@@ -110,7 +138,8 @@ class MusicPlayerWindow(QtWidgets.QWidget):
             self.timeStart.setText(self.format_time(position))
             self.timeEnd.setText(self.format_time(duration))
 
-    def format_time(self, ms):
+    @staticmethod
+    def format_time(ms):
         seconds = ms // 1000
         minutes = seconds // 60
         seconds = seconds % 60

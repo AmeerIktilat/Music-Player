@@ -17,7 +17,7 @@ class MenuPanel:
         self.menuLayout.setContentsMargins(10, 10, 10, 10)
         self.menuLayout.setSpacing(10)
 
-        self.favoriteLabel = QtWidgets.QLabel("★ Favorite Playlist")
+        self.favoriteLabel = QtWidgets.QLabel("★ Playlist's ")
         self.favoriteLabel.setStyleSheet("color: gold; font-size: 14px; font-weight: bold;")
         self.menuLayout.addWidget(self.favoriteLabel)
 
@@ -50,11 +50,30 @@ class MenuPanel:
         self.backButton.clicked.connect(self.toggle_menu)
         self.menuLayout.addWidget(self.backButton)
 
+
         self.playlistButtons = []
 
     def toggle_menu(self):
-        self.menuPanel.setVisible(not self.menuPanel.isVisible())
-        self.close_playlist()  # 👈 Add this line to hide playlist panel when closing menu
+        if self.menuPanel.isVisible():
+            # Slide out to the left
+            self.animation = QPropertyAnimation(self.menuPanel, b"geometry")
+            self.animation.setDuration(300)
+            self.animation.setStartValue(QRect(0, 0, 120, self.parent.height()))
+            self.animation.setEndValue(QRect(-120, 0, 120, self.parent.height()))
+            self.animation.finished.connect(self.menuPanel.hide)
+            self.animation.start()
+        else:
+            # Show and slide in from the left
+            self.menuPanel.setGeometry(-120, 0, 120, self.parent.height())
+            self.menuPanel.show()
+            self.menuPanel.raise_()
+            self.animation = QPropertyAnimation(self.menuPanel, b"geometry")
+            self.animation.setDuration(300)
+            self.animation.setStartValue(QRect(-120, 0, 120, self.parent.height()))
+            self.animation.setEndValue(QRect(0, 0, 120, self.parent.height()))
+            self.animation.start()
+
+        self.close_playlist()
 
     def create_playlist(self):
         name, ok = QtWidgets.QInputDialog.getText(self.parent, "New Playlist", "Enter playlist name:")
@@ -96,7 +115,7 @@ class MenuPanel:
 
         # Create the playlist panel off-screen
         self.playlistPanel = QtWidgets.QFrame(self.parent)
-        self.playlistPanel.setGeometry(-280, 0, 280, self.parent.height())
+        self.playlistPanel.setGeometry(-280, 0, 280, self.parent.height())#---------
         self.playlistPanel.setStyleSheet("background-color: #2e1f4b;")
         self.playlistPanel.show()
 
