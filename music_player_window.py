@@ -1,18 +1,16 @@
 import os
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QPixmap
-
-
-from PyQt5 import QtWidgets, uic, QtGui
-from PyQt5.QtCore import QTimer, QUrl
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import QSize, Qt, QTimer, QUrl
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtWidgets import QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QLabel, QListWidget, QPushButton
 
 from track_manager import TrackManager
 from playlist_manager import PlaylistManager
 from background_manager import BackgroundManager
 from menu_panel import MenuPanel
+from add_song_dialog import AddSongDialog
+
 
 class MusicPlayerWindow(QtWidgets.QWidget):
     def __init__(self):
@@ -20,7 +18,6 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         uic.loadUi("resourses/MusicPlayerWindow.ui", self)
         self.setWindowTitle("Music Player")
         self.setWindowIcon(QIcon("resourses/Images/Icons/Music-Player-Icon2.jpeg"))
-
 
         self.player = QMediaPlayer()
         self.timer = QTimer()
@@ -32,33 +29,29 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.background_manager = BackgroundManager()
         self.menu_panel = MenuPanel(self, self.playlist_manager, self.track_manager)
 
-        # 🎨 Background frame (must be created before load_track)
+        # 🎨 Background frame
         self.backgroundFrame = QtWidgets.QFrame(self)
         self.backgroundFrame.setObjectName("backgroundFrame")
         self.backgroundFrame.setGeometry(0, 0, self.width(), self.height())
-        self.backgroundFrame.lower()  # Push behind all other widgets
+        self.backgroundFrame.lower()
 
-        self.tracks = [
-            os.path.join("resourses/Music", f)
-            for f in os.listdir("resourses/Music")
-            if f.lower().endswith(".mp3")
+        # 🎵 Song list widget
+        self.song_list_widget = QListWidget(self)
+        self.song_list_widget.setGeometry(20, 100, 200, 400)  # Adjust as needed
+        self.song_list_widget.itemClicked.connect(self.play_selected_song)
+        self.song_list_widget.setVisible(False)#debugging----------------------
 
-        ]
-
-        self.covers = [
-            os.path.join("resourses/Images/Covers", f)
-            for f in os.listdir("resourses/Images/Covers")
-            if f.lower().endswith(".jpg") or f.lower().endswith(".png") or f.lower().endswith(".jpeg") or f.lower().endswith(".webp")
-        ]
+        # 🎧 Load tracks and covers
+        self.refresh_tracks_and_covers()
         self.track_manager.set_tracks(self.tracks)
         self.load_track(0)
 
+        # 🎛️ Button setup
         self.menuButton.clicked.connect(self.menu_panel.toggle_menu)
         self.pauseButton.clicked.connect(self.toggle_pause)
         self.nextButton.clicked.connect(self.skip_next)
         self.prevButton.clicked.connect(self.skip_previous)
         self.progressBar.sliderMoved.connect(self.seek_position)
-
 
         self.nextButton.setIcon(QIcon("resourses/Images/Icons/next_button_icon.png"))
         self.nextButton.setIconSize(QSize(40, 40))
@@ -68,15 +61,63 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.prevButton.setIconSize(QSize(40, 40))
         self.prevButton.setText("")
 
-        self.timeStart.setText("0:00")
-        self.timeEnd.setText("0:00")
         self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
         self.pauseButton.setIconSize(QSize(40, 40))
         self.pauseButton.setText("")
-        self.setObjectName("musicPlayerWindow")
+
+        self.timeStart.setText("0:00")
+        self.timeEnd.setText("0:00")
+
+        # ➕ Add song button
+        self.add_button = QPushButton("+", self)
+        self.add_button.setFixedSize(40, 40)
+        self.add_button.move(self.width() - 60, self.height() - 60)
+        self.add_button.clicked.connect(self.open_add_song_dialog)
+
+    def refresh_tracks_and_covers(self):
+        self.tracks = [
+            os.path.join("resourses/Music", f)
+            for f in os.listdir("resourses/Music")
+            if f.lower().endswith(".mp3")
+        ]
+        self.covers = [
+            os.path.join("resourses/Images/Covers", f)
+            for f in os.listdir("resourses/Images/Covers")
+            if f.lower().endswith((".jpg", ".png", ".jpeg", ".webp"))
+        ]
+        self.load_songs()
+
+    def load_songs(self):
+        self.song_list_widget.clear()
+        for track_path in self.tracks:
+            song_name = os.path.splitext(os.path.basename(track_path))[0]
+            self.song_list_widget.addItem(song_name)
+
+    def play_selected_song(self, item):
+        song_name = item.text()
+        music_path = os.path.join("resourses/Music", f"{song_name}.mp3")
+        if os.path.exists(music_path):
+            url = QUrl.fromLocalFile(os.path.abspath(music_path))
+            self.player.setMedia(QMediaContent(url))
+            self.player.play()
+            self.songTitle.setText(song_name)
+            self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
+            self.timer.start()
+
+            # Update album cover
+            cover_path = next((c for c in self.covers if os.path.basename(c).startswith(song_name)), "resourses/Images/Covers/ztrack.png")
+            pixmap = QPixmap(cover_path).scaled(self.albumCover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.albumCover.setPixmap(pixmap)
+
+    def open_add_song_dialog(self):
+        dialog = AddSongDialog(self)
+        if dialog.exec_():
+            self.refresh_tracks_and_covers()
+            self.track_manager.set_tracks(self.tracks)
 
     def resizeEvent(self, event):
         self.backgroundFrame.setGeometry(0, 0, self.width(), self.height())
+        self.add_button.move(self.width() - 60, self.height() - 60)
         super().resizeEvent(event)
 
     def load_track(self, index):
@@ -85,29 +126,18 @@ class MusicPlayerWindow(QtWidgets.QWidget):
             track_name = os.path.basename(track_path).replace(".mp3", "")
             display_name = track_name.replace("_", " ").title()
 
-            # 🎧 Load and play the track
             url = QUrl.fromLocalFile(os.path.abspath(track_path))
             self.player.setMedia(QMediaContent(url))
             self.player.play()
             self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
             self.timer.start()
 
-            # 🏷️ Update song title
             self.songTitle.setText(display_name)
-
-            # 🌄 Update background
             self.background_manager.apply_background(self, index)
 
-            if index >= len(self.covers):
-                pixmap = QPixmap("resourses/Images/Covers/ztrack.png")
-            else:
-                pixmap = QPixmap(self.covers[index])
-
-
-            pixmap = pixmap.scaled(self.albumCover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.imageLabel = QLabel(self)
-            self.imageLabel.setPixmap(pixmap)
-            self.imageLabel.setGeometry(100, 50, 200, 200)
+            cover_path = self.covers[index] if index < len(self.covers) else "resourses/Images/Covers/ztrack.png"
+            pixmap = QPixmap(cover_path).scaled(self.albumCover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.albumCover.setPixmap(pixmap)
 
     def toggle_pause(self):
         if self.player.state() == QMediaPlayer.PlayingState:
