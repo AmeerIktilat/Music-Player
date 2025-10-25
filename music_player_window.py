@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QSize, Qt, QTimer, QUrl
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtWidgets import QLabel, QListWidget, QPushButton
+from PyQt5.QtWidgets import QListWidget, QPushButton
 
 from track_manager import TrackManager
 from background_manager import BackgroundManager
@@ -29,8 +29,6 @@ class MusicPlayerWindow(QtWidgets.QWidget):
             }
         """)
 
-
-
         self.player = QMediaPlayer()
         self.timer = QTimer()
         self.timer.setInterval(1000)
@@ -47,7 +45,7 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.song_list_widget = QListWidget(self)
         self.song_list_widget.setGeometry(20, 100, 200, 400)
         self.song_list_widget.itemClicked.connect(self.play_selected_song)
-        self.song_list_widget.setVisible(False)#debugging----------------------
+        self.song_list_widget.setVisible(False)
 
         self.refresh_tracks_and_covers()
         self.track_manager.set_tracks(self.tracks)

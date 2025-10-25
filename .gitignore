@@ -1,16 +1,45 @@
-# Byte-compiled / cache
+# Python
 __pycache__/
 *.py[cod]
-*.log
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.spec
+*.manifest
 
-# Virtual environment
+# Virtual Environment
 .venv/
+venv/
+ENV/
+env/
 
-# PyInstaller build
+# PyInstaller
+*.spec
 build/
 dist/
-*.spec
 
-# OS files
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# PyQt
+*.pyc
+*.pyo
+*.ui~
+
+# Project specific (optional - uncomment if needed)
+# resourses/Music/*.mp3
+# resourses/Images/Covers/*
+# !resourses/Images/Covers/ztrack.png

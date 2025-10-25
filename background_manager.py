@@ -2,8 +2,6 @@ import os
 import random
 
 
-
-
 class BackgroundManager:
     @staticmethod
     def find_cover_image(track_name):
@@ -13,7 +11,6 @@ class BackgroundManager:
             if os.path.exists(path):
                 return path
         return None
-
 
     def apply_background(self, widget, index):
         item_count = len(os.listdir("resourses/Images/Backgrounds"))
@@ -26,4 +23,3 @@ class BackgroundManager:
                 background-attachment: fixed;
             }}
         """)
-

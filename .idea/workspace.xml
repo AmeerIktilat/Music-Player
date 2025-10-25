@@ -5,41 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c8062d4-a481-4dac-8588-50fe35c54490" name="Changes" comment="V2.0">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/add_song_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/add_song_dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/Analysis-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/COLLECT-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/COLLECT-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/EXE-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/PYZ-00.pyz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/PYZ-00.toc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/base_library.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/main.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/main.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/main.pkg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/warn-main.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/warn-main.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/xref-main.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/main/xref-main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_internal/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main/_internal/base_library.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_internal/resourses/Images/Covers/track1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_internal/resourses/Music/track1.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_internal/resourses/Music/track2.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_internal/resourses/Music/track3.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_internal/resourses/MusicPlayerWindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main/_internal/resourses/MusicPlayerWindow.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main/main.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/resourses/Images/Covers/track1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/resourses/Music/track1.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/resourses/Music/track2.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/resourses/Music/track3.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/resourses/MusicPlayerWindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main/resourses/MusicPlayerWindow.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/background_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/background_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/menu_panel.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu_panel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/music_player_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/music_player_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playlist_manager.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Images/Covers/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Images/Covers/track1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Music/1.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Music/agfag.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Music/track1.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Music/track2.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/Music/track3.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resourses/MusicPlayerWindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/resourses/MusicPlayerWindow.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/track_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/track_manager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +136,7 @@
       <workItem from="1760857741655" duration="7991000" />
       <workItem from="1760940321664" duration="2848000" />
       <workItem from="1761400810758" duration="598000" />
-      <workItem from="1761409436873" duration="312000" />
+      <workItem from="1761409436873" duration="1780000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit :&#10;created the main window and application">
       <option name="closed" value="true" />
@@ -194,6 +168,9 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.spec" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -211,7 +188,7 @@
     <option name="LAST_COMMIT_MESSAGE" value="V2.0" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Music_Player$main.coverage" NAME="main Coverage Results" MODIFIED="1761405333808" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/Music_Player$main.coverage" NAME="main Coverage Results" MODIFIED="1761410679404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Music_Player$music_player_window.coverage" NAME="music_player_window Coverage Results" MODIFIED="1760868007510" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

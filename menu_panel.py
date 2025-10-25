@@ -1,8 +1,8 @@
+
+import os
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPropertyAnimation, QRect, QUrl, Qt
 from PyQt5.QtGui import QIcon, QPixmap
-import os
-
 from PyQt5.QtMultimedia import QMediaContent
 
 
@@ -112,4 +112,4 @@ class MenuPanel:
                 index = self.parent.tracks.index(music_path)
                 self.parent.background_manager.apply_background(self.parent, index)
             except ValueError:
-                print(f"Track not found in list: {music_path}")
+                pass

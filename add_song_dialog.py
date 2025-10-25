@@ -1,8 +1,7 @@
 import os
 import shutil
-from PyQt5.QtWidgets import (
-    QDialog, QLabel, QLineEdit, QPushButton, QFileDialog, QVBoxLayout, QMessageBox
-)
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QMessageBox
+
 
 class AddSongDialog(QDialog):
     def __init__(self, parent=None):
@@ -32,8 +31,6 @@ class AddSongDialog(QDialog):
         layout.addWidget(self.cover_button)
         layout.addWidget(self.submit_button)
         self.setLayout(layout)
-
-        self.parent_window = parent  # Save reference to main window
 
     def select_mp3(self):
         file, _ = QFileDialog.getOpenFileName(self, "Select MP3", "", "MP3 Files (*.mp3)")
@@ -66,18 +63,6 @@ class AddSongDialog(QDialog):
                 cover_target = os.path.join(cover_dir, f"{song_name}{ext}")
                 shutil.copy(self.cover_path, cover_target)
             QMessageBox.information(self, "Success", f"Song '{song_name}' added successfully!")
-            self.accept()
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to add song: {e}")
-
-        try:
-            shutil.copy(self.mp3_path, mp3_target)
-            if self.cover_path:
-                ext = os.path.splitext(self.cover_path)[1]
-                shutil.copy(self.cover_path, os.path.join(cover_dir, f"{song_name}{ext}"))
-
-            QMessageBox.information(self, "Success", f"Song '{song_name}' added successfully!")
-            self.parent_window.load_songs()  # Refresh playlist
             self.accept()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to add song: {e}")
