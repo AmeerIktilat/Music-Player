@@ -1,0 +1,16 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.log
+
+# Virtual environment
+.venv/
+
+# PyInstaller build
+build/
+dist/
+*.spec
+
+# OS files
+.DS_Store
+Thumbs.db

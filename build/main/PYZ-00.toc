@@ -129,6 +129,10 @@
   ('_threading_local',
    'C:\\Users\\iktil\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\_threading_local.py',
    'PYMODULE'),
+  ('add_song_dialog',
+   'C:\\Users\\iktil\\Internal '
+   'OS\\Pycharm_Projects\\Music-Player\\add_song_dialog.py',
+   'PYMODULE'),
   ('annotationlib',
    'C:\\Users\\iktil\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\annotationlib.py',
    'PYMODULE'),
@@ -413,10 +417,6 @@
    'PYMODULE'),
   ('pkgutil',
    'C:\\Users\\iktil\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\pkgutil.py',
-   'PYMODULE'),
-  ('playlist_manager',
-   'C:\\Users\\iktil\\Internal '
-   'OS\\Pycharm_Projects\\Music-Player\\playlist_manager.py',
    'PYMODULE'),
   ('pprint',
    'C:\\Users\\iktil\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\pprint.py',

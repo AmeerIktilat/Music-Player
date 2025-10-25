@@ -1,12 +1,14 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QPropertyAnimation, QRect, QUrl, Qt
+from PyQt5.QtGui import QIcon, QPixmap
 import os
-from PyQt5.QtCore import QPropertyAnimation, QRect
+
+from PyQt5.QtMultimedia import QMediaContent
+
 
 class MenuPanel:
-    def __init__(self, parent, playlist_manager, track_manager):
+    def __init__(self, parent):
         self.parent = parent
-        self.playlist_manager = playlist_manager
-        self.track_manager = track_manager
 
         self.menuPanel = QtWidgets.QFrame(parent)
         self.menuPanel.setGeometry(0, 0, 120, parent.height())
@@ -17,24 +19,12 @@ class MenuPanel:
         self.menuLayout.setContentsMargins(10, 10, 10, 10)
         self.menuLayout.setSpacing(10)
 
-        self.favoriteLabel = QtWidgets.QLabel("★ Playlist's ")
-        self.favoriteLabel.setStyleSheet("color: gold; font-size: 14px; font-weight: bold;")
-        self.menuLayout.addWidget(self.favoriteLabel)
+        self.titleLabel = QtWidgets.QLabel("♪ Songs")
+        self.titleLabel.setStyleSheet("color: gold; font-size: 14px; font-weight: bold;")
+        self.menuLayout.addWidget(self.titleLabel)
 
-        self.createPlaylistButton = QtWidgets.QPushButton("Create Playlist")
-        self.createPlaylistButton.setStyleSheet("""
-            QPushButton {
-                background-color: #a86cc1;
-                color: white;
-                border-radius: 8px;
-                font-size: 12px;
-            }
-        """)
-        self.createPlaylistButton.clicked.connect(self.create_playlist)
-        self.menuLayout.addWidget(self.createPlaylistButton)
-
-        self.playlistContainer = QtWidgets.QVBoxLayout()
-        self.menuLayout.addLayout(self.playlistContainer)
+        self.songContainer = QtWidgets.QVBoxLayout()
+        self.menuLayout.addLayout(self.songContainer)
 
         self.menuLayout.addStretch()
 
@@ -50,12 +40,10 @@ class MenuPanel:
         self.backButton.clicked.connect(self.toggle_menu)
         self.menuLayout.addWidget(self.backButton)
 
-
-        self.playlistButtons = []
+        self.songButtons = []
 
     def toggle_menu(self):
         if self.menuPanel.isVisible():
-            # Slide out to the left
             self.animation = QPropertyAnimation(self.menuPanel, b"geometry")
             self.animation.setDuration(300)
             self.animation.setStartValue(QRect(0, 0, 120, self.parent.height()))
@@ -63,7 +51,6 @@ class MenuPanel:
             self.animation.finished.connect(self.menuPanel.hide)
             self.animation.start()
         else:
-            # Show and slide in from the left
             self.menuPanel.setGeometry(-120, 0, 120, self.parent.height())
             self.menuPanel.show()
             self.menuPanel.raise_()
@@ -72,72 +59,57 @@ class MenuPanel:
             self.animation.setStartValue(QRect(-120, 0, 120, self.parent.height()))
             self.animation.setEndValue(QRect(0, 0, 120, self.parent.height()))
             self.animation.start()
+            self.load_songs()
 
-        self.close_playlist()
+    def load_songs(self):
+        for btn in self.songButtons:
+            btn.deleteLater()
+        self.songButtons.clear()
 
-    def create_playlist(self):
-        name, ok = QtWidgets.QInputDialog.getText(self.parent, "New Playlist", "Enter playlist name:")
-        if ok and name:
-            self.playlist_manager.create_playlist(name)
-            self.add_playlist_to_menu(name)
+        music_dir = "resourses/Music"
+        supported_formats = ('.mp3', '.wav', '.ogg')
 
-    def add_playlist_to_menu(self, name):
-        button = QtWidgets.QPushButton(name)
-        button.setStyleSheet("""
-            QPushButton {
-                background-color: #4b2e6f;
-                color: white;
-                border-radius: 6px;
-                font-size: 12px;
-            }
-        """)
-        button.clicked.connect(lambda _, n=name: self.open_playlist(n))
-        self.playlistContainer.addWidget(button)
-        self.playlistButtons.append(button)
+        try:
+            songs = [f for f in os.listdir(music_dir) if f.endswith(supported_formats)]
+        except FileNotFoundError:
+            songs = []
 
-    def close_playlist(self):
-        if hasattr(self, "playlistPanel"):
-            self.animation = QPropertyAnimation(self.playlistPanel, b"geometry")
-            self.animation.setDuration(300)
-            self.animation.setStartValue(QRect(120, 0, 280, self.parent.height()))
-            self.animation.setEndValue(QRect(-280, 0, 280, self.parent.height()))
-            self.animation.finished.connect(self.playlistPanel.hide)
-            self.animation.start()
+        for name in songs:
+            display_name = os.path.splitext(name)[0]
+            button = QtWidgets.QPushButton(display_name)
+            button.setStyleSheet("""
+                QPushButton {
+                    background-color: #4b2e6f;
+                    color: white;
+                    border-radius: 6px;
+                    font-size: 12px;
+                }
+            """)
+            button.clicked.connect(lambda _, n=name: self.play_song(n))
+            self.songContainer.addWidget(button)
+            self.songButtons.append(button)
 
-    from PyQt5 import QtWidgets
-    from PyQt5.QtCore import QPropertyAnimation, QRect
+    def play_song(self, song_name):
+        music_path = os.path.join("resourses/Music", song_name)
+        if os.path.exists(music_path):
+            url = QUrl.fromLocalFile(os.path.abspath(music_path))
+            self.parent.player.setMedia(QMediaContent(url))
+            self.parent.player.play()
+            self.parent.songTitle.setText(os.path.splitext(song_name)[0])
+            self.parent.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
+            self.parent.timer.start()
 
-    def open_playlist(self, name):
-        self.close_playlist()
-        # Remove previous panel if it exists
-        if hasattr(self, "playlistPanel"):
-            self.playlistPanel.deleteLater()
+            cover_path = next(
+                (c for c in self.parent.covers if os.path.basename(c).startswith(os.path.splitext(song_name)[0])),
+                "resourses/Images/Covers/ztrack.png"
+            )
+            pixmap = QPixmap(cover_path).scaled(
+                self.parent.albumCover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+            self.parent.albumCover.setPixmap(pixmap)
 
-        # Create the playlist panel off-screen
-        self.playlistPanel = QtWidgets.QFrame(self.parent)
-        self.playlistPanel.setGeometry(-280, 0, 280, self.parent.height())#---------
-        self.playlistPanel.setStyleSheet("background-color: #2e1f4b;")
-        self.playlistPanel.show()
-
-        # Animate sliding in from the left
-        self.animation = QPropertyAnimation(self.playlistPanel, b"geometry")
-        self.animation.setDuration(300)
-        self.animation.setStartValue(QRect(-280, 0, 280, self.parent.height()))
-        self.animation.setEndValue(QRect(120, 0, 280, self.parent.height()))
-        self.animation.start()
-
-        # Add playlist title
-        title = QtWidgets.QLabel(f"{name} Songs", self.playlistPanel)
-        title.setGeometry(10, 10, 260, 30)
-        title.setStyleSheet("color: white; font-size: 14px;")
-
-        # Add song buttons
-        songs = self.playlist_manager.get_tracks(name)
-        self.playlistSongButtons = []
-        for i, song in enumerate(songs):
-            btn = QtWidgets.QPushButton(os.path.basename(song), self.playlistPanel)
-            btn.setGeometry(10, 50 + i * 35, 260, 30)
-            btn.setStyleSheet("background-color: #a86cc1; color: white; border-radius: 6px;")
-            btn.clicked.connect(lambda _, s=song: self.play_song_from_playlist(s))
-            btn.show()
-            self.playlistSongButtons.append(btn)
+            try:
+                index = self.parent.tracks.index(music_path)
+                self.parent.background_manager.apply_background(self.parent, index)
+            except ValueError:
+                print(f"Track not found in list: {music_path}")

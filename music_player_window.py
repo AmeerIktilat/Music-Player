@@ -6,7 +6,6 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtWidgets import QLabel, QListWidget, QPushButton
 
 from track_manager import TrackManager
-from playlist_manager import PlaylistManager
 from background_manager import BackgroundManager
 from menu_panel import MenuPanel
 from add_song_dialog import AddSongDialog
@@ -19,34 +18,42 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.setWindowTitle("Music Player")
         self.setWindowIcon(QIcon("resourses/Images/Icons/Music-Player-Icon2.jpeg"))
 
+        self.songTitle.setStyleSheet("""
+            QLabel {
+                background-color: #4b2e6f;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 6px 12px;
+                border-radius: 6px;
+            }
+        """)
+
+
+
         self.player = QMediaPlayer()
         self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_progress)
 
         self.track_manager = TrackManager(self.player)
-        self.playlist_manager = PlaylistManager()
         self.background_manager = BackgroundManager()
-        self.menu_panel = MenuPanel(self, self.playlist_manager, self.track_manager)
 
-        # 🎨 Background frame
         self.backgroundFrame = QtWidgets.QFrame(self)
         self.backgroundFrame.setObjectName("backgroundFrame")
         self.backgroundFrame.setGeometry(0, 0, self.width(), self.height())
         self.backgroundFrame.lower()
 
-        # 🎵 Song list widget
         self.song_list_widget = QListWidget(self)
-        self.song_list_widget.setGeometry(20, 100, 200, 400)  # Adjust as needed
+        self.song_list_widget.setGeometry(20, 100, 200, 400)
         self.song_list_widget.itemClicked.connect(self.play_selected_song)
         self.song_list_widget.setVisible(False)#debugging----------------------
 
-        # 🎧 Load tracks and covers
         self.refresh_tracks_and_covers()
         self.track_manager.set_tracks(self.tracks)
+        self.menu_panel = MenuPanel(self)
         self.load_track(0)
 
-        # 🎛️ Button setup
         self.menuButton.clicked.connect(self.menu_panel.toggle_menu)
         self.pauseButton.clicked.connect(self.toggle_pause)
         self.nextButton.clicked.connect(self.skip_next)
@@ -68,10 +75,21 @@ class MusicPlayerWindow(QtWidgets.QWidget):
         self.timeStart.setText("0:00")
         self.timeEnd.setText("0:00")
 
-        # ➕ Add song button
         self.add_button = QPushButton("+", self)
         self.add_button.setFixedSize(40, 40)
         self.add_button.move(self.width() - 60, self.height() - 60)
+        self.add_button.setStyleSheet("""
+            QPushButton {
+                background-color: #a86cc1;
+                color: white;
+                border-radius: 8px;
+                font-size: 18px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #c58ee0;
+            }
+        """)
         self.add_button.clicked.connect(self.open_add_song_dialog)
 
     def refresh_tracks_and_covers(self):
@@ -104,7 +122,6 @@ class MusicPlayerWindow(QtWidgets.QWidget):
             self.pauseButton.setIcon(QIcon("resourses/Images/Icons/pause_button_icon.png"))
             self.timer.start()
 
-            # Update album cover
             cover_path = next((c for c in self.covers if os.path.basename(c).startswith(song_name)), "resourses/Images/Covers/ztrack.png")
             pixmap = QPixmap(cover_path).scaled(self.albumCover.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.albumCover.setPixmap(pixmap)

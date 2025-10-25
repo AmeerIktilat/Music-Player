@@ -57,7 +57,7 @@
    <property name="styleSheet">
     <string notr="true">
      QLabel {
-       border-radius: 20px;
+       border-radius: 80px;
      }
     </string>
    </property>

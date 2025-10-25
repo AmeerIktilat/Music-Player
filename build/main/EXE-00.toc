@@ -80,7 +80,7 @@
  [],
  False,
  False,
- 1760907486,
+ 1761405530,
  [('runw.exe',
    'C:\\Users\\iktil\\Internal '
    'OS\\Pycharm_Projects\\Music-Player\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',

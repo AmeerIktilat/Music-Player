@@ -55,7 +55,6 @@ class AddSongDialog(QDialog):
         cover_dir = "resourses/Images/Covers"
         mp3_target = os.path.join(music_dir, f"{song_name}.mp3")
 
-        # Check for duplicates
         if os.path.exists(mp3_target):
             QMessageBox.warning(self, "Duplicate", "A song with this name already exists.")
             return
